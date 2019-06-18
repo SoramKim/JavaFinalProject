@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
@@ -23,8 +21,7 @@ public class ZipReader {
 		    Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
 		   int i = 0 ;
 		    while(entries.hasMoreElements()){
-		    	i++;
-
+//		    	i++;
 		        ZipArchiveEntry entry = entries.nextElement();
 		        InputStream stream = zipFile.getInputStream(entry);
 		        String fileType = entry.getName().substring(0,entry.getName().indexOf("."));
@@ -33,19 +30,13 @@ public class ZipReader {
 		        
 		        ExcelReader myReader = new ExcelReader();
 		        
-		        if(i==1) {
+		        
+		        if(fileType.contains("요약문")){
 		        	myReader.getDataOfFile1(stream, values1, file.getName());
 		        }
-		        else if(i==2) {
+		        else if(fileType.contains("표")){
 		        	myReader.getDataOfFile2(stream, values2, file.getName());
 		        }
-		        
-//		        if(fileType.contains("요약문")){
-//		        	myReader.getDataOfFile1(stream, values1, file.getName());
-//		        }
-//		        else if(fileType.contains("표")){
-//		        	myReader.getDataOfFile2(stream, values2, file.getName());
-//		        }
 		    }
 		    zipFile.close();
 		} catch (IOException e) {
