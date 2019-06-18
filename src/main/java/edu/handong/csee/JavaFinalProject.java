@@ -1,9 +1,7 @@
 package edu.handong.csee;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.io.File;
-import java.util.Arrays;
 
 import org.apache.commons.cli.*;
 
@@ -28,26 +26,26 @@ public class JavaFinalProject {
 			}
 			
 			File dataDir = new File(input);
-			if(!dataDir.exists()) {
-				System.out.println("Wrong Input Path");
-				System.exit(0);
-			}
-			
+	
 			ArrayList<ExcelForSummary> values1 = new ArrayList<ExcelForSummary>();
 			ArrayList<ExcelForPictureAndTable> values2 = new ArrayList<ExcelForPictureAndTable>();
 			
 			File[] fileList = dataDir.listFiles();
-			Arrays.sort(fileList);
+			//Arrays.sort(fileList);
 			int i=0;
 			for(File file : fileList) {
 				i++;
 				System.out.println(i + " Times : " + file.getName());
 				ZipReader.readFileInZip(file, values1, values2);
 			}
+//			for(File file : fileList) {
+//				ZipReader.readFileInZip(file, values1, values2);
+//			}
 			ExcelWriter.WriteAFile1(values1, output);
 			ExcelWriter.WriteAFile2(values2, output);
 		}
 	}
+	
 	
 	private boolean parseOptions(Options options, String[] args) {
 		CommandLineParser parser = new DefaultParser();

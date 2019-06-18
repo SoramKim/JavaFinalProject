@@ -1,76 +1,58 @@
 package edu.handong.csee.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 
-import edu.handong.csee.ErrorDataFile;
+import edu.handong.csee.datamodel.ExcelForSummary;
+import edu.handong.csee.datamodel.ExcelForPictureAndTable;
 
-public class ZipReader implements Runnable {
+public class ZipReader {
 
-	private String input;
-	private String output;
-	private String zip;
-	
-	public ZipReader(String input, String output, String zip) {
-		this.input = input;
-		this.output = output;
-		this.zip = zip;
-	}
-	
-	public void run() {
-		ZipFile zipFile;
-		String input = this.input + "/" + zip;
+	public static void readFileInZip(File file, ArrayList<ExcelForSummary> values1, ArrayList<ExcelForPictureAndTable> values2) {
 		try {
-			
-			zipFile = new ZipFile(input, "EUC-KR");
-			Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
-			
-			int count = 0;
-			
+			ZipFile zipFile = new ZipFile(file);
+
+		    Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
+		   int i = 0 ;
 		    while(entries.hasMoreElements()){
-		    	ZipArchiveEntry entry = entries.nextElement();
-		    	InputStream stream = zipFile.getInputStream(entry);	
+		    	i++;
+
+		        ZipArchiveEntry entry = entries.nextElement();
+		        InputStream stream = zipFile.getInputStream(entry);
 		        String fileType = entry.getName().substring(0,entry.getName().indexOf("."));
+		        //System.out.println(entry);
+		        //System.out.println("fileType: "+ fileType);
 		        
-		        System.out.println("filetype: "+fileType);
+		        ExcelReader myReader = new ExcelReader();
 		        
-		        int type = -1;
-		        String outputZipName = "";
-		        
-		        if(fileType.contains("요약문")) {			//type == 0
-		        	type = 0;
-		        	outputZipName = "result1.csv";
-		        } else if(fileType.contains("표")) { 	//type == 1
-		        	type = 1;
-		        	outputZipName = "result2.csv";
-		        } else {
-		        	zipFile.close();
-		        	throw new ErrorDataFile(fileType);
+		        if(i==1) {
+		        	myReader.getDataOfFile1(stream, values1, file.getName());
+		        }
+		        else if(i==2) {
+		        	myReader.getDataOfFile2(stream, values2, file.getName());
 		        }
 		        
-		        ExcelWriter writer = new ExcelWriter(output+outputZipName, type);
-		        ExcelReader reader = new ExcelReader(stream, zip, type);
-		        
-		        for(String[] value : reader.getData()) {
-		        	for(String str : value) {
-		        		System.out.println("str : "+str);
-		        	}
-		        	writer.writeFile(value);
-		        }
+//		        if(fileType.contains("요약문")){
+//		        	myReader.getDataOfFile1(stream, values1, file.getName());
+//		        }
+//		        else if(fileType.contains("표")){
+//		        	myReader.getDataOfFile2(stream, values2, file.getName());
+//		        }
 		    }
-		    
-			zipFile.close();
-			
+		    zipFile.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ErrorDataFile e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
+			e.getMessage();
 		}
+		
 	}
+
+
 }
