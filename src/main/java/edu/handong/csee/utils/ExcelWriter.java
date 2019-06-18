@@ -1,5 +1,5 @@
 package edu.handong.csee.utils;
 
-public class Utils {
+public class ExcelWriter {
 
 }
