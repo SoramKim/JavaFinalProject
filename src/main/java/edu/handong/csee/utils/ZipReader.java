@@ -20,24 +20,22 @@ public class ZipReader {
 
 		    Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
 		   int i = 0 ;
-		    while(entries.hasMoreElements()){
-//		    	i++;
+		   while(entries.hasMoreElements()){
+		    	i++;
 		        ZipArchiveEntry entry = entries.nextElement();
 		        InputStream stream = zipFile.getInputStream(entry);
-		        String fileType = entry.getName().substring(0,entry.getName().indexOf("."));
-		        //System.out.println(entry);
-		        //System.out.println("fileType: "+ fileType);
+		        System.out.println(entry);
 		        
 		        ExcelReader myReader = new ExcelReader();
 		        
-		        
-		        if(fileType.contains("요약문")){
+		        if(i==1) {
 		        	myReader.getDataOfFile1(stream, values1, file.getName());
 		        }
-		        else if(fileType.contains("표")){
+		        else if(i==2) {
 		        	myReader.getDataOfFile2(stream, values2, file.getName());
 		        }
 		    }
+
 		    zipFile.close();
 		} catch (IOException e) {
 			e.getMessage();
